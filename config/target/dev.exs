@@ -78,7 +78,8 @@ config :farmbot, :behaviour,
   firmware_handler: Farmbot.Firmware.StubHandler,
   update_handler: Farmbot.Target.UpdateHandler,
   pin_binding_handler: Farmbot.Target.PinBinding.AleHandler,
-  leds_handler: Farmbot.Target.Leds.AleHandler
+  leds_handler: Farmbot.Target.Leds.AleHandler,
+  nerves_hub_provisioner: Farmbot.Target.NervesHubProvisioner
 
 local_file = Path.join(System.user_home!(), ".ssh/id_rsa.pub")
 local_key = if File.exists?(local_file), do: [File.read!(local_file)], else: []
@@ -88,4 +89,5 @@ config :nerves_firmware_ssh, authorized_keys: local_key
 
 config :shoehorn,
   init: [:nerves_runtime, :nerves_init_gadget, :nerves_firmware_ssh],
+  handler: Farmbot.ShoehornHandler,
   app: :farmbot

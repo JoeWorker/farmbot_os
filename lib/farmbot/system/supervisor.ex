@@ -11,25 +11,13 @@ defmodule Farmbot.System.Supervisor do
   end
 
   def init([]) do
-    before_init_children = [
+    children = [
       worker(Farmbot.System.Registry, []),
-      worker(Farmbot.System.Init.KernelMods, [[], []]),
-      worker(Farmbot.System.Init.FSCheckup, [[], []]),
-      supervisor(Farmbot.System.Init.Ecto, [[], []]),
-      supervisor(Farmbot.System.ConfigStorage, []),
-      worker(Farmbot.System.ConfigStorage.Dispatcher, []),
-    ]
-
-    init_mods =
-      Application.get_env(:farmbot, :init)
-      |> Enum.map(fn child -> fb_init(child, [[], [name: child]]) end)
-
-    after_init_children = [
+      supervisor(Farmbot.System.Init.Supervisor, []),
+      worker(Farmbot.System.NervesHub, []),
       supervisor(Farmbot.System.Updates, []),
       worker(Farmbot.EasterEggs, []),
     ]
-
-    all_children = before_init_children ++ init_mods ++ after_init_children
-    Supervisor.init(all_children, strategy: :one_for_all)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 end
