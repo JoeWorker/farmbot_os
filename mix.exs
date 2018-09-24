@@ -123,7 +123,10 @@ defmodule Farmbot.Mixfile do
       {:ring_logger, "~> 0.4.1"},
       {:bbmustache, "~> 1.5"},
       {:apex, "~> 1.2"},
-      {:logger_backend_sqlite, "~> 2.0"}
+      {:logger_backend_sqlite, "~> 2.0"},
+
+      {:nerves_runtime, github: "nerves-project/nerves_runtime", branch: "put-uboot", override: true},
+      {:nerves_hub_cli, path: "/home/connor/oss/elixir/nerves_hub/nerves_hub_cli", runtime: false, override: true}
     ]
   end
 
@@ -142,7 +145,6 @@ defmodule Farmbot.Mixfile do
   defp deps(target) do
     system(target) ++
       [
-        {:nerves_runtime, "~> 0.6.1"},
         {:nerves_firmware, "~> 0.4"},
         {:nerves_firmware_ssh, "~> 0.3.3"},
         {:nerves_init_gadget, "~> 0.4.0", only: :dev},
@@ -151,7 +153,8 @@ defmodule Farmbot.Mixfile do
         {:nerves_wpa_supplicant, "~> 0.3"},
         {:dhcp_server, "~> 0.6"},
         {:elixir_ale, "~> 1.0"},
-        {:mdns, "~> 1.0"}
+        {:mdns, "~> 1.0"},
+        {:nerves_hub, path: "/home/connor/oss/elixir/nerves_hub/nerves_hub", override: true}
       ]
   end
 

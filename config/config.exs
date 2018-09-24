@@ -69,7 +69,16 @@ config :farmbot,
 
 global_overlay_dir = "rootfs_overlay"
 
-config :nerves, :firmware, rootfs_overlay: [global_overlay_dir]
+config :nerves, :firmware,
+  rootfs_overlay: [global_overlay_dir],
+  provisioning: :nerves_hub
+
+config :nerves_hub,
+  public_keys: [:prod]
+
+config :nerves_hub, NervesHub.Socket, [
+  reconnect_interval: 5_000,
+]
 
 case target do
   "host" ->
@@ -82,5 +91,8 @@ case target do
       do: import_config("target/#{target}.exs")
 
     if File.exists?(custom_rootfs_overlay_dir),
-      do: config :nerves, :firmware, rootfs_overlay: [global_overlay_dir, custom_rootfs_overlay_dir]
+      do: config :nerves, :firmware,
+              rootfs_overlay: [global_overlay_dir, custom_rootfs_overlay_dir],
+              provisioning: :nerves_hub
+
 end

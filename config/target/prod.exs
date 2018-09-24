@@ -17,7 +17,7 @@ config :farmbot, Farmbot.System.ConfigStorage,
   database: "/root/config-#{Mix.env()}.sqlite3"
 
 config :farmbot, ecto_repos: [Farmbot.Repo, Farmbot.System.ConfigStorage]
-  
+
 config :logger, LoggerBackendSqlite, [
   database: "/root/debug_logs.sqlite3",
   max_logs: 10000
@@ -77,7 +77,8 @@ config :farmbot, :behaviour,
   firmware_handler: Farmbot.Firmware.StubHandler,
   update_handler: Farmbot.Target.UpdateHandler,
   pin_binding_handler: Farmbot.Target.PinBinding.AleHandler,
-  leds_handler: Farmbot.Target.Leds.AleHandler
+  leds_handler: Farmbot.Target.Leds.AleHandler,
+  nerves_hub_provisioner: Farmbot.Target.NervesHubProvisioner
 
 config :nerves_network, regulatory_domain: "US"
 config :shoehorn,

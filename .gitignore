@@ -56,3 +56,7 @@ RELEASE_NOTES
 .make_state
 
 .elixir_ls
+
+# Nerves-Hub stuff
+/nerves-hub
+/*.pem
