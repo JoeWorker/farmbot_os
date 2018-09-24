@@ -41,7 +41,7 @@ defmodule Farmbot.System.NervesHub do
       if "" in config do
         :ok = deconfigure()
         :ok = provision()
-        :ok = configure([app_env, server_env] ++ extra_tags)
+        configure([app_env, server_env] ++ extra_tags)
       else
         NervesHub.connect()
       end
