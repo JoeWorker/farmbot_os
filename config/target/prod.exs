@@ -78,7 +78,7 @@ config :farmbot, :behaviour,
   update_handler: Farmbot.Target.UpdateHandler,
   pin_binding_handler: Farmbot.Target.PinBinding.AleHandler,
   leds_handler: Farmbot.Target.Leds.AleHandler,
-  nerves_hub_provisioner: Farmbot.Target.NervesHubProvisioner
+  nerves_hub_handler: Farmbot.Target.NervesHubHandler
 
 config :nerves_network, regulatory_domain: "US"
 config :shoehorn,
