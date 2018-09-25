@@ -61,7 +61,8 @@ defmodule Farmbot.Mixfile do
   def application do
     [
       mod: {Farmbot, []},
-      extra_applications: [:logger, :eex, :ssl, :inets, :runtime_tools]
+      extra_applications: [:logger, :eex, :ssl, :inets, :runtime_tools],
+      included_applications: [:nerves_hub]
     ]
   end
 

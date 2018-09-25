@@ -43,7 +43,7 @@ defmodule Farmbot.System.NervesHub do
         :ok = provision()
         configure([app_env, server_env] ++ extra_tags)
       else
-        NervesHub.connect()
+        connect()
       end
 
       {:noreply, :configured}
@@ -52,6 +52,18 @@ defmodule Farmbot.System.NervesHub do
       Process.send_after(self(), :configure, 10_000)
       {:noreply, :not_configured}
     end
+  end
+
+  def connect do
+    Logger.info "Starting NervesHub"
+    # Stop Nerves Hub if it is running.
+    _ = Application.stop(:nerves_hub)
+    # Cause NervesRuntime.KV to restart.
+    _ = GenServer.stop(Nerves.Runtime.KV)
+    {:ok, _} = Application.ensure_all_started(:nerves_hub)
+    Process.sleep(1000)
+    _ = NervesHub.connect()
+    :ok
   end
 
   # Returns the current serial number.
@@ -74,11 +86,14 @@ defmodule Farmbot.System.NervesHub do
       serial_number: serial(),
       tags: tags
     } |> Farmbot.JSON.encode!()
-    Farmbot.HTTP.post("/api/device_cert", payload)
+    Farmbot.HTTP.post!("/api/device_cert", payload)
+    :ok
   end
 
   # Message comes over AMQP.
-  def configure_certs(%{"cert" => cert, "key" => key}) do
+  def configure_certs("-----BEGIN CERTIFICATE-----" <> _ = cert,
+                      "-----BEGIN EC PRIVATE KEY-----" <> _ = key) do
+    Logger.info "Configuring certs for NervesHub."
     Nerves.Runtime.KV.UBootEnv.put("nerves_hub_cert", cert)
     Nerves.Runtime.KV.UBootEnv.put("nerves_hub_key", key)
     :ok
