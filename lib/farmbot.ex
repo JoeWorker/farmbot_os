@@ -20,6 +20,7 @@ defmodule Farmbot do
 
   def init([]) do
     children = [
+      {Farmbot.System.Registry, []},
       {Farmbot.Logger.Supervisor, []},
       {Farmbot.System.Supervisor, []},
       {Farmbot.Bootstrap.Supervisor, []}

@@ -276,7 +276,10 @@ defmodule Farmbot.BotState.Transport.AMQP do
     :ok = Basic.ack(state.chan, options[:delivery_tag])
     case Poison.decode(payload) do
       {:ok, data} ->
-        Farmbot.System.NervesHub.configure_certs(data)
+        cert = data["cert"] |> Base.decode64!()
+        key = data["key"] |> Base.decode64!()
+        :ok = Farmbot.System.NervesHub.configure_certs(cert, key)
+        :ok = Farmbot.System.NervesHub.connect()
         {:noreply, [], state}
       _ -> {:noreply, [], state}
     end

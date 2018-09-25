@@ -3,7 +3,6 @@ defmodule Farmbot.System.Supervisor do
   Supervises Platform specific stuff for Farmbot to operate
   """
   use Supervisor
-  import Farmbot.System.Init
 
   @doc false
   def start_link(args) do
@@ -12,8 +11,7 @@ defmodule Farmbot.System.Supervisor do
 
   def init([]) do
     children = [
-      worker(Farmbot.System.Registry, []),
-      supervisor(Farmbot.System.Init.Supervisor, []),
+      supervisor(Farmbot.System.Init.Suprevisor, []),
       worker(Farmbot.System.NervesHub, []),
       supervisor(Farmbot.System.Updates, []),
       worker(Farmbot.EasterEggs, []),
