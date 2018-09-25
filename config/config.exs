@@ -77,6 +77,7 @@ config :nerves_hub,
   public_keys: [:prod]
 
 config :nerves_hub, NervesHub.Socket, [
+  update_handler: Farmbot.System.NervesHub.Handler,
   reconnect_interval: 5_000,
 ]
 
