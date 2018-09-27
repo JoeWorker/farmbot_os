@@ -66,7 +66,7 @@ config :farmbot, :init, [
 ]
 
 config :farmbot, :transport, [
-  Farmbot.BotState.Transport.AMQP,
+  Farmbot.BotState.Transport.AMQP.Supervisor,
   Farmbot.BotState.Transport.HTTP,
   Farmbot.BotState.Transport.Registry,
 ]

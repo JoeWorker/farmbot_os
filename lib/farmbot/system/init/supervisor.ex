@@ -1,4 +1,5 @@
 defmodule Farmbot.System.Init.Suprevisor do
+  @moduledoc false
   use Supervisor
   import Farmbot.System.Init
 
@@ -13,11 +14,11 @@ defmodule Farmbot.System.Init.Suprevisor do
 
     children = [
       # Load kernel modules
-      worker(Farmbot.System.Init.KernelMods, [[], []]),
+      worker(Farmbot.System.Init.KernelMods, [[], []], restart: transient),
       # Ensure filesystem
-      worker(Farmbot.System.Init.FSCheckup, [[], []]),
+      worker(Farmbot.System.Init.FSCheckup, [[], []], restart: :transient),
       # Ensure ecto + migrations
-      supervisor(Farmbot.System.Init.Ecto, [[], []]),
+      supervisor(Farmbot.System.Init.Ecto, [[], []], restart: :transient),
       # Ensure config_storage
       supervisor(Farmbot.System.ConfigStorage, []),
       worker(Farmbot.System.ConfigStorage.Dispatcher, []),

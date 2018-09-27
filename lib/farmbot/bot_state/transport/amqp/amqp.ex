@@ -206,71 +206,9 @@ defmodule Farmbot.BotState.Transport.AMQP do
     end
   end
 
-  @doc false
-  def handle_sync_cmd(kind, id, payload, state) do
-    mod = Module.concat(["Farmbot", "Asset", kind])
-    if Code.ensure_loaded?(mod) do
-      %{
-        "body" => body,
-        "args" => %{"label" => uuid}
-      } = Poison.decode!(payload, as: %{"body" => struct(mod)})
 
-      _cmd = ConfigStorage.register_sync_cmd(String.to_integer(id), kind, body)
-      # This if statment should really not live here..
-      if get_config_value(:bool, "settings", "auto_sync") do
-        Farmbot.Repo.fragment_sync()
-      else
-        Farmbot.BotState.set_sync_status(:sync_now)
-      end
-      {:ok, %Macro.Env{}} = AST.Node.RpcOk.execute(%{label: uuid}, [], struct(Macro.Env))
-    else
-      %{
-        "body" => _body,
-        "args" => %{"label" => uuid}
-      } = Poison.decode!(payload)
-      msg = "Unknown syncable: #{mod}"
-      {:ok, expl, %Macro.Env{}} = AST.Node.Explanation.execute(%{message: msg}, [], struct(Macro.Env))
-      {:ok, %Macro.Env{}} = AST.Node.RpcError.execute(%{label: uuid}, [expl], struct(Macro.Env))
-    end
-    {:noreply, [], state}
-  end
 
-  def handle_fbos_config(_, _, %{state_cache: nil} = state) do
-    # Don't update fbos config, if we don't have a state cache for whatever reason.
-    {:noreply, [], state}
-  end
 
-  def handle_fbos_config(_id, payload, state) do
-    if get_config_value(:bool, "settings", "ignore_fbos_config") do
-      IO.puts "Ignoring OS config from AMQP."
-      {:noreply, [], state}
-    else
-      case Poison.decode(payload) do
-        {:ok, %{"body" => %{"api_migrated" => true} = config}} ->
-          # Logger.info 1, "Got fbos config from amqp: #{inspect config}"
-          old = state.state_cache.configuration
-          updated = Farmbot.Bootstrap.SettingsSync.apply_fbos_map(old, config)
-          push_bot_state(state.chan, state.bot, %{state.state_cache | configuration: updated})
-          {:noreply, [], state}
-        _ -> {:noreply, [], state}
-      end
-    end
-  end
-
-  def handle_fw_config(_id, payload, state) do
-    if get_config_value(:bool, "settings", "ignore_fw_config") do
-      IO.puts "Ignoring FW config from AMQP."
-      {:noreply, [], state}
-    else
-      case Poison.decode(payload) do
-        {:ok, %{"body" => %{} = config}} ->
-          old = state.state_cache.mcu_params
-          _new = Farmbot.Bootstrap.SettingsSync.apply_fw_map(old, config)
-          {:noreply, [], state}
-        _ -> {:noreply, [], state}
-        end
-    end
-  end
 
   def handle_nerves_hub(payload, options, state) do
     :ok = Basic.ack(state.chan, options[:delivery_tag])

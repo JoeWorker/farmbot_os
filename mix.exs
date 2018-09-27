@@ -154,7 +154,8 @@ defmodule Farmbot.Mixfile do
     system(target) ++
       [
         {:nerves_runtime, github: "nerves-project/nerves_runtime", override: true},
-        {:nerves_hub, github: "nerves-hub/nerves_hub", branch: "add-conditional-update-handler", override: true},
+        {:nerves_hub,
+         github: "nerves-hub/nerves_hub", branch: "add-conditional-update-handler", override: true},
         {:nerves_firmware, "~> 0.4"},
         {:nerves_firmware_ssh, "~> 0.3.3"},
         {:nerves_init_gadget, "~> 0.4.0", only: :dev},
@@ -163,7 +164,7 @@ defmodule Farmbot.Mixfile do
         {:nerves_wpa_supplicant, "~> 0.3"},
         {:dhcp_server, "~> 0.6"},
         {:elixir_ale, "~> 1.0"},
-        {:mdns, "~> 1.0"},
+        {:mdns, "~> 1.0"}
       ]
   end
 
