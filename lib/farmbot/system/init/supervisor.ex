@@ -1,4 +1,5 @@
 defmodule Farmbot.System.Init.Suprevisor do
+  @moduledoc false
   use Supervisor
   import Farmbot.System.Init
 

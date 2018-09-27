@@ -5,7 +5,6 @@ defmodule Farmbot.System.NervesHub do
   Some things can be configured via Mix.Config:
 
       config :farmbot, Farmbot.System.NervesHub, [
-        server_env: "server:some_other_tag",
         app_env: "application:some_other_tag",
         extra_tags: ["some", "more", "tags"]
       ]
@@ -54,22 +53,14 @@ defmodule Farmbot.System.NervesHub do
   end
 
   def handle_info(:configure, :not_configured) do
-    server = get_config_value(:string, "authorization", "server")
     channel = if get_config_value(:bool, "settings", "beta_opt_in") do
-      "beta"
+      "channel:beta"
     else
-      "stable"
+      "channel:stable"
     end
 
-    if server && Process.whereis(Farmbot.HTTP) do
+    if Process.whereis(Farmbot.HTTP) do
       app_config = Application.get_env(:farmbot, __MODULE__, [])
-      "server:" <> _ = server_env = app_config[:server_env] || case URI.parse(server) do
-        %{host: "my.farm.bot"}        -> "server:production"
-        %{host: "my.farmbot.io"}      -> "server:production"
-        %{host: "staging.farm.bot"}   -> "server:staging"
-        %{host: "staging.farmbot.io"} -> "server:staging"
-        _ -> "server:unknown"
-      end
 
       "application:" <> _ = app_env = app_config[:app_env] || "application:#{Farmbot.Project.env()}"
       extra_tags = app_config[:extra_tags] || []
@@ -77,7 +68,7 @@ defmodule Farmbot.System.NervesHub do
       if "" in get_config() do
         :ok = deconfigure()
         :ok = provision()
-        :ok = configure([app_env, server_env, channel] ++ extra_tags)
+        :ok = configure([app_env, channel] ++ extra_tags)
       else
         connect()
       end

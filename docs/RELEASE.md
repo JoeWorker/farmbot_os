@@ -116,22 +116,16 @@ Tags/Deployments follow this structure:
 ```json
 [
   "application:<MIX_ENV>",
-  "server:<SERVER_IDENTIFIER>",
-  "CHANNEL"
+  "channel:<CHANNEL>"
 ]
 ```
 
-NOTE: the first two are **NOT** json objects, they are simple strings
-split by a `:` character.
+NOTE: the tags **NOT** json objects, they are simple strings
+split by a `:` character. This is done _only_ for readability.
 
 where `MIX_ENV` will be one of:
 * `dev`
 * `prod`
-
-and `SERVER_IDENTIFIER` will be one of:
-* `production` -> `my.farmbot.io` & `my.farm.bot`
-* `staging` -> `staging.farmbot.io` & `staging.farm.bot`
-* `unknown` -> anything else.
 
 and `CHANNEL` will be one of:
 * `beta`
@@ -140,44 +134,21 @@ and `CHANNEL` will be one of:
 There should be at least one deployment matching the following
 tags:
 
-* `["application:dev", "server:production", "stable"]`
-    * a development FBOS release for `my.farm.bot`, and `my.farmbot.io`
-    on the `stable` channel
-* `["application:prod", "server:production", "stable"]`
-    * a production FBOS release for `my.farm.bot`, and `my.farmbot.io`
-    on the `stable` channel
-* `["application:dev", "server:production", "beta"]`
-    * a development FBOS release for `my.farm.bot`, and `my.farmbot.io`
-    on the `beta` channel
-* `["application:prod", "server:production", "beta"]`
-    * a production FBOS release for `my.farm.bot`, and `my.farmbot.io`
-    on the `beta` channel
-* `["application:dev", "server:staging", "stable"]`
-    * a development FBOS release for `staging.farm.bot`
-    and `staging.farmbot.io` on the `stable` channel
-* `["application:prod", "server:staging", "stable"]`
-    * a production FBOS release for `staging.farm.bot`
-    and `staging.farmbot.io` on the `stable` channel
-* `["application:dev", "server:staging", "beta"]`
-    * a development FBOS release for `staging.farm.bot`
-    and `staging.farmbot.io` on the `beta` channel
-* `["application:prod", "server:staging", "beta"]`
-    * a production FBOS release for `staging.farm.bot`
-    and `staging.farmbot.io` on the `beta` channel
-
-There is a possibility for handling the following also:
-
-* `["application:dev", "server:unknown", "stable"]`
-    * a development FBOS release for unknown servers on the
-    `stable` channel
-* `["application:dev", "server:unknown", "beta"]`
-    * a development FBOS release for unknown servers on the
-    `beta` channel
-* `["application:prod", "server:unknwon", "stable"]`
-    * a production FBOS release for unknown servers on the
-    `stable` channel
-* `["application:prod", "server:unknwon", "beta"]`
-    * a production FBOS release for unknown servers on the
-    `beta` channel
+* `["application:dev", "channel:stable"]`
+    * a development FBOS release on the `stable` channel
+* `["application:prod", "channel:stable"]`
+    * a production FBOS release on the `stable` channel
+* `["application:dev", "channel:beta"]`
+    * a development FBOS release on the `beta` channel
+* `["application:prod", "channel:beta"]`
+    * a production FBOS release on the `beta` channel
+* `["application:dev", "channel:stable"]`
+    * a development FBOS release on the `stable` channel
+* `["application:prod", "channel:stable"]`
+    * a production FBOS release on the `stable` channel
+* `["application:dev", "channel:beta"]`
+    * a development FBOS release on the `beta` channel
+* `["application:prod", "channel:beta"]`
+    * a production FBOS release on the `beta` channel
 
 
