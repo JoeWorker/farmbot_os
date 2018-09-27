@@ -97,5 +97,4 @@ case target do
       do: config :nerves, :firmware,
               rootfs_overlay: [global_overlay_dir, custom_rootfs_overlay_dir],
               provisioning: :nerves_hub
-
 end

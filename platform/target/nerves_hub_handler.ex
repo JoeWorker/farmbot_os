@@ -3,7 +3,7 @@ defmodule Farmbot.Target.NervesHubHandler do
   require Logger
 
   def serial_number(plat) do
-    :os.cmd('/usr/bin/boardid -b uboot_env -u nerves_serial_number -b uboot_env -u serial_number -b #{plat} -n 4')
+    :os.cmd('/usr/bin/boardid -b uboot_env -u nerves_serial_number -b uboot_env -u serial_number -b #{plat}')
     |> to_string()
     |> String.trim()
   end

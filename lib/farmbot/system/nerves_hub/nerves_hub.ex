@@ -42,6 +42,7 @@ defmodule Farmbot.System.NervesHub do
 
   use GenServer
   require Logger
+  import Farmbot.System.ConfigStorage, only: [get_config_value: 3]
 
   def start_link(args \\ []) do
     GenServer.start_link(__MODULE__, args, [name: __MODULE__])
@@ -53,7 +54,13 @@ defmodule Farmbot.System.NervesHub do
   end
 
   def handle_info(:configure, :not_configured) do
-    server = Farmbot.System.ConfigStorage.get_config_value(:string, "authorization", "server")
+    server = get_config_value(:string, "authorization", "server")
+    channel = if get_config_value(:bool, "settings", "beta_opt_in") do
+      "beta"
+    else
+      "stable"
+    end
+
     if server && Process.whereis(Farmbot.HTTP) do
       app_config = Application.get_env(:farmbot, __MODULE__, [])
       "server:" <> _ = server_env = app_config[:server_env] || case URI.parse(server) do
@@ -61,7 +68,7 @@ defmodule Farmbot.System.NervesHub do
         %{host: "my.farmbot.io"}      -> "server:production"
         %{host: "staging.farm.bot"}   -> "server:staging"
         %{host: "staging.farmbot.io"} -> "server:staging"
-        _ -> "server:production"
+        _ -> "server:unknown"
       end
 
       "application:" <> _ = app_env = app_config[:app_env] || "application:#{Farmbot.Project.env()}"
@@ -70,7 +77,7 @@ defmodule Farmbot.System.NervesHub do
       if "" in get_config() do
         :ok = deconfigure()
         :ok = provision()
-        :ok = configure([app_env, server_env] ++ extra_tags)
+        :ok = configure([app_env, server_env, channel] ++ extra_tags)
       else
         connect()
       end

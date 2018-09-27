@@ -133,7 +133,7 @@ defmodule Farmbot.Mixfile do
       {:bbmustache, "~> 1.6"},
       {:sqlite_ecto2, "~> 2.2"},
       {:logger_backend_sqlite, "~> 2.1"},
-      {:nerves_hub_cli, "~> 0.2.0", runtime: false}
+      {:nerves_hub_cli, github: "nerves-hub/nerves_hub_cli", runtime: false}
     ]
   end
 
