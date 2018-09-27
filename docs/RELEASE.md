@@ -152,3 +152,10 @@ tags:
     * a production FBOS release on the `beta` channel
 
 
+### First time setup
+```
+heroku config:set NERVES_HUB_CERT="$NERVES_HUB_CERT" --app=$HEROKU_APPNAME
+heroku config:set NERVES_HUB_KEY="$NERVES_HUB_KEY" --app=$HEROKU_APPNAME
+heroku config:set NERVES_HUB_CA="$NERVES_HUB_CA" --app=$HEROKU_APPNAME
+heroku config:set NERVES_HUB_ORG="$NERVES_HUB_ORG" --app=$HEROKU_APPNAME
+```

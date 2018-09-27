@@ -74,7 +74,7 @@ config :nerves, :firmware,
   provisioning: :nerves_hub
 
 config :nerves_hub,
-  public_keys: [:prod]
+  public_keys: [:prod, :staging]
 
 config :nerves_hub, NervesHub.Socket, [
   update_handler: Farmbot.System.NervesHub.Handler,
