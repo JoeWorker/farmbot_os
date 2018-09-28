@@ -129,22 +129,11 @@ defmodule Farmbot.Mixfile do
       {:rsa, "~> 0.0.1"},
       {:joken, "~> 1.5"},
       {:uuid, "~> 1.1"},
-<<<<<<< HEAD
       {:ring_logger, "~> 0.5"},
       {:bbmustache, "~> 1.6"},
       {:sqlite_ecto2, "~> 2.2"},
       {:logger_backend_sqlite, "~> 2.1"},
       {:nerves_hub_cli, github: "nerves-hub/nerves_hub_cli", runtime: false}
-=======
-      {:socket, "~> 0.3.13"},
-      {:amqp, "~> 1.0"},
-      {:recon, "~> 2.3.2"},
-      {:ring_logger, "~> 0.4.1"},
-      {:bbmustache, "~> 1.5"},
-      {:apex, "~> 1.2"},
-      {:logger_backend_sqlite, "~> 2.0"},
-      {:nerves_hub_cli, github: "nerves-hub/nerves_hub_cli", branch: "feature/force", runtime: false, override: true}
->>>>>>> 04b2aa0b... It works :boom:
     ]
   end
 
