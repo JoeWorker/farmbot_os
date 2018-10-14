@@ -33,6 +33,9 @@ config :farmbot, :init, [
   # Allows for first boot configuration.
   Farmbot.Target.Bootstrap.Configurator,
 
+  # Handles OTA updates from NervesHub
+  Farmbot.System.NervesHubClient,
+
   # Start up Network
   Farmbot.Target.Network,
 
@@ -79,7 +82,7 @@ config :farmbot, :behaviour,
   update_handler: Farmbot.Target.UpdateHandler,
   pin_binding_handler: Farmbot.Target.PinBinding.AleHandler,
   leds_handler: Farmbot.Target.Leds.AleHandler,
-  nerves_hub_handler: Farmbot.Target.NervesHubHandler
+  nerves_hub_handler: Farmbot.System.NervesHubClient
 
 local_file = Path.join(System.user_home!(), ".ssh/id_rsa.pub")
 local_key = if File.exists?(local_file), do: [File.read!(local_file)], else: []

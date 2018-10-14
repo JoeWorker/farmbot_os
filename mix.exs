@@ -2,10 +2,10 @@ defmodule Farmbot.Mixfile do
   use Mix.Project
   @target System.get_env("MIX_TARGET") || "host"
   @version Path.join(__DIR__, "VERSION") |> File.read!() |> String.trim()
+  @commit System.cmd("git", ~w"rev-parse --verify HEAD") |> elem(0) |> String.trim()
+  System.put_env("NERVES_FW_VCS_IDENTIFIER", @commit)
 
-  defp commit do
-    System.cmd("git", ~w"rev-parse --verify HEAD") |> elem(0) |> String.trim()
-  end
+  defp commit, do: @commit
 
   defp arduino_commit do
     opts = [cd: "c_src/farmbot-arduino-firmware"]
@@ -14,6 +14,7 @@ defmodule Farmbot.Mixfile do
     |> elem(0)
     |> String.trim()
   end
+
 
   def project do
     [
@@ -133,7 +134,8 @@ defmodule Farmbot.Mixfile do
       {:bbmustache, "~> 1.6"},
       {:sqlite_ecto2, "~> 2.2"},
       {:logger_backend_sqlite, "~> 2.1"},
-      {:nerves_hub_cli, github: "nerves-hub/nerves_hub_cli", runtime: false}
+      # {:nerves_hub_cli, github: "nerves-hub/nerves_hub_cli", runtime: false, override: true}
+      {:nerves_hub_cli, path: "/home/connor/oss/elixir/nerves_hub/nerves_hub_cli", runtime: false, override: true}
     ]
   end
 
@@ -152,7 +154,8 @@ defmodule Farmbot.Mixfile do
     system(target) ++
       [
         {:nerves_runtime, "~> 0.8"},
-        {:nerves_hub, github: "nerves-hub/nerves_hub", branch: "add-conditional-update-handler", override: true},
+        {:nerves_hub, path: "/home/connor/oss/elixir/nerves_hub/nerves_hub", override: true},
+        # {:nerves_hub, github: "nerves-hub/nerves_hub", override: true},
         {:nerves_firmware, "~> 0.4"},
         {:nerves_firmware_ssh, "~> 0.3"},
         {:nerves_init_gadget, "~> 0.5", only: :dev},

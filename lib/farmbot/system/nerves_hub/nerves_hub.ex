@@ -39,6 +39,9 @@ defmodule Farmbot.System.NervesHub do
   @doc "Remove serial, cert, and key from persistent storage."
   @callback deconfigure() :: :ok | :error
 
+  @doc "Should return a url to an update or nil."
+  @callback check_update() :: String.t() | nil
+
   use GenServer
   require Logger
   import Farmbot.System.ConfigStorage, only: [get_config_value: 3]
@@ -125,5 +128,10 @@ defmodule Farmbot.System.NervesHub do
     Logger.info "Deconfiguring NervesHub"
     :ok = @handler.deconfigure()
     :ok
+  end
+
+  def check_update do
+    Logger.info "Check update NervesHub"
+    @handler.check_update()
   end
 end

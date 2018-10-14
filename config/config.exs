@@ -73,14 +73,6 @@ config :nerves, :firmware,
   rootfs_overlay: [global_overlay_dir],
   provisioning: :nerves_hub
 
-config :nerves_hub,
-  public_keys: [:prod, :staging, :"staging-2"]
-
-config :nerves_hub, NervesHub.Socket, [
-  update_handler: Farmbot.System.NervesHub.Handler,
-  reconnect_interval: 5_000,
-]
-
 import_config("nerves_hub.exs")
 
 case target do

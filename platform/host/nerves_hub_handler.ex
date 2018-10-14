@@ -22,4 +22,6 @@ defmodule Farmbot.Host.NervesHubHandler do
     "Not a real cert",
     "Not a real key"
   ]
+
+  def check_update, do: nil
 end
