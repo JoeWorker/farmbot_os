@@ -70,6 +70,23 @@ defmodule Farmbot.System.NervesHubClient do
     GenServer.call(__MODULE__, {:update_available, args}, :infinity)
   end
 
+  def handle_fwup_message({:progress, percent}) do
+    Logger.info("FWUP Stream Progress: #{percent}%")
+    alias Farmbot.BotState.JobProgress
+    prog = %JobProgress.Percent{percent: percent}
+    Farmbot.BotState.set_job_progress("FBOS_OTA", prog)
+    :ok
+  end
+
+  def handle_fwup_message({:error, _, reason}) do
+    Logger.error "FWUP Error: #{reason}"
+    :ok
+  end
+
+  def handle_fwup_message(_) do
+    :ok
+  end
+
   def start_link(_, _) do
     GenServer.start_link(__MODULE__, [], [name: __MODULE__])
   end

@@ -90,6 +90,13 @@ local_key = if File.exists?(local_file), do: [File.read!(local_file)], else: []
 config :nerves_network, regulatory_domain: "US"
 config :nerves_firmware_ssh, authorized_keys: local_key
 
+config :nerves_init_gadget,
+  ifname: "usb0",
+  address_method: :dhcpd,
+  mdns_domain: "farmbot.local",
+  node_name: nil,
+  node_host: :mdns_domain
+
 config :shoehorn,
   init: [:nerves_runtime, :nerves_init_gadget, :nerves_firmware_ssh],
   handler: Farmbot.ShoehornHandler,

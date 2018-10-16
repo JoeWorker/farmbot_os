@@ -3,7 +3,6 @@ defmodule Farmbot do
   Supervises the individual modules that make up the Farmbot Application.
   This is the entry point of the application.
   """
-
   require Farmbot.Logger
   require Logger
   use Application
