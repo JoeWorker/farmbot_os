@@ -1,39 +1,37 @@
-ALL :=
-CLEAN :=
+.PHONY: all clean
+.DEFAULT_GOAL: all
 
-ifeq ($(ERL_EI_INCLUDE_DIR),)
+MIX_ENV := $(MIX_ENV)
+MIX_TARGET := $(MIX_TARGET)
 
-$(warning ERL_EI_INCLUDE_DIR not set. Invoke via mix)
-
-else
-
-ALL += fbos_build_calendar_nif
-CLEAN += fbos_clean_build_calendar_nif
+ifeq ($(MIX_ENV),)
+MIX_ENV := dev
 endif
 
-ifeq ($(SKIP_ARDUINO_BUILD),)
-
-ALL += fbos_arduino_firmware
-CLEAN += fbos_clean_arduino_firmware
-
-else
-$(warning SKIP_ARDUINO_BUILD is set. No arduino assets will be built.)
+ifeq ($(MIX_TARGET),)
+MIX_TARGET := host
 endif
 
-.PHONY: $(ALL) $(CLEAN) all clean
+PROJECTS := farmbot_celery_script \
+						farmbot_core \
+						farmbot_ext \
+						farmbot_os
 
-all: $(ALL)
+all: help
 
-clean: $(CLEAN)
+help:
+	@echo "Usage: "
+	@echo "	make [target]"
+	@echo "TARGETS: "
+	@echo "	clean - clean all."
 
-fbos_arduino_firmware:
-	cd c_src/farmbot-arduino-firmware && make all BUILD_DIR=$(PWD)/_build FBARDUINO_FIRMWARE_SRC_DIR=$(PWD)/c_src/farmbot-arduino-firmware/src BIN_DIR=$(PWD)/priv
+clean_other_branch:
+	rm -rf _build deps c_src config tmp
 
-fbos_clean_arduino_firmware:
-	cd c_src/farmbot-arduino-firmware && make clean BUILD_DIR=$(PWD)/_build FBARDUINO_FIRMWARE_SRC_DIR=$(PWD)/c_src/farmbot-arduino-firmware/src BIN_DIR=$(PWD)/priv
-
-fbos_build_calendar_nif:
-	make -f c_src/build_calendar/Makefile all ERL_EI_INCLUDE_DIR=$(ERL_EI_INCLUDE_DIR) ERL_EI_LIBDIR=$(ERL_EI_LIBDIR)
-
-fbos_clean_build_calendar_nif:
-	make -f c_src/build_calendar/Makefile clean ERL_EI_INCLUDE_DIR=$(ERL_EI_INCLUDE_DIR) ERL_EI_LIBDIR=$(ERL_EI_LIBDIR)
+clean: clean_other_branch
+	@for project in $(PROJECTS) ; do \
+		echo cleaning $$project ; \
+		rm -rf $$project/_build ; \
+		rm -rf $$project/deps ; \
+		rm -rf $$project/priv/*.so ; \
+	done
