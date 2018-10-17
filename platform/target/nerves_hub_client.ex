@@ -62,7 +62,11 @@ defmodule Farmbot.System.NervesHubClient do
   end
 
   def check_update do
-    GenServer.call(__MODULE__, :check_update, :infinity)
+    case GenServer.call(__MODULE__, :check_update) do
+      # If updates were disabled, and an update is queued
+    {:ignore, _url} -> NervesHub.update()
+    _ -> nil
+    end
   end
 
   # Callback for NervesHub.Client
@@ -74,7 +78,9 @@ defmodule Farmbot.System.NervesHubClient do
     Logger.info("FWUP Stream Progress: #{percent}%")
     alias Farmbot.BotState.JobProgress
     prog = %JobProgress.Percent{percent: percent}
-    Farmbot.BotState.set_job_progress("FBOS_OTA", prog)
+    if Process.whereis(Farmbot.BotState) do
+      Farmbot.BotState.set_job_progress("FBOS_OTA", prog)
+    end
     :ok
   end
 
@@ -96,23 +102,16 @@ defmodule Farmbot.System.NervesHubClient do
   end
 
   def handle_call({:update_available, %{"firmware_url" => url}}, _, _state) do
+    if Process.whereis(Farmbot.BotState) do
+      Farmbot.BotState.set_update_available(true)
+    end
     case get_config_value(:bool, "settings", "os_auto_update") do
       true -> {:reply, :apply, {:apply, url}}
       false -> {:reply, :ignore, {:ignore, url}}
     end
   end
 
-  def handle_call(:check_update, _from, {:ignore, url} = state) do
-    {:ok, pid} = NervesHub.HTTPClient.start_link self()
-    NervesHub.HTTPClient.get(pid, url)
-    {:reply, url, state}
-  end
-
-  def handle_call(:check_update, _from, state), do: {:reply, nil, state}
-
-  def handle_info({:fwup, :done}, state) do
-    Logger.info "Downloaded and applied update."
-    Farmbot.System.reboot("NervesHub update")
-    {:noreply, state}
+  def handle_call(:check_update, _from, state) do
+    {:reply, state, state}
   end
 end
